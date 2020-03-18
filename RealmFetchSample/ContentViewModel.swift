@@ -51,7 +51,12 @@ public class ContentViewModel: ObservableObject, Identifiable {
 			.sink { [weak self] _ in
 				guard let s = self else { return }
 				AF.request(s.url, method: .post).responseData { response in
-					
+					guard let s = self,
+						let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(s.realmFileName ?? "default.realm"),
+						let data = response.data else { return }
+
+					try? FileManager.default.removeItem(at: path)
+					try? data.write(to: path)
 				}
 		}.store(in: &cancellables)
 		
