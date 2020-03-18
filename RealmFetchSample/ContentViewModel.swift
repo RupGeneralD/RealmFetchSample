@@ -22,9 +22,7 @@ public class ContentViewModel: ObservableObject, Identifiable {
     private var cancellables: [AnyCancellable] = []
 
 	private(set) lazy var onDisappear: () -> Void = { [weak self] in
-        guard let self = self else { return }
-        self.cancellables.forEach { $0.cancel() }
-        self.cancellables = []
+        self?.cancellables.clear()
     }
 	
 	init() {

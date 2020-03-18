@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,6 +14,7 @@
 		28D38A7B2421A74A006534CB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28D38A7A2421A74A006534CB /* Preview Assets.xcassets */; };
 		28D38A7E2421A74A006534CB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 28D38A7C2421A74A006534CB /* LaunchScreen.storyboard */; };
 		28D38A882421AECF006534CB /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D38A872421AECF006534CB /* ContentViewModel.swift */; };
+		28D38A8A2421D0F2006534CB /* CancellableArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28D38A892421D0F2006534CB /* CancellableArrayExtension.swift */; };
 		8771D439B1C68BC2C4E84A7A /* Pods_RealmFetchSample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F33A6A9819749C038F9B640 /* Pods_RealmFetchSample.framework */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		28D38A7D2421A74A006534CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		28D38A7F2421A74A006534CB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		28D38A872421AECF006534CB /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
+		28D38A892421D0F2006534CB /* CancellableArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancellableArrayExtension.swift; sourceTree = "<group>"; };
 		7F33A6A9819749C038F9B640 /* Pods_RealmFetchSample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RealmFetchSample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		98FF82CD154FC8ED5D333694 /* Pods-RealmFetchSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RealmFetchSample.debug.xcconfig"; path = "Target Support Files/Pods-RealmFetchSample/Pods-RealmFetchSample.debug.xcconfig"; sourceTree = "<group>"; };
 		D241BF049F289B7716E9E543 /* Pods-RealmFetchSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RealmFetchSample.release.xcconfig"; path = "Target Support Files/Pods-RealmFetchSample/Pods-RealmFetchSample.release.xcconfig"; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				28D38A732421A749006534CB /* SceneDelegate.swift */,
 				28D38A752421A749006534CB /* ContentView.swift */,
 				28D38A872421AECF006534CB /* ContentViewModel.swift */,
+				28D38A892421D0F2006534CB /* CancellableArrayExtension.swift */,
 				28D38A772421A74A006534CB /* Assets.xcassets */,
 				28D38A7C2421A74A006534CB /* LaunchScreen.storyboard */,
 				28D38A7F2421A74A006534CB /* Info.plist */,
@@ -91,7 +94,6 @@
 				98FF82CD154FC8ED5D333694 /* Pods-RealmFetchSample.debug.xcconfig */,
 				D241BF049F289B7716E9E543 /* Pods-RealmFetchSample.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -220,6 +222,7 @@
 			files = (
 				28D38A882421AECF006534CB /* ContentViewModel.swift in Sources */,
 				28D38A722421A749006534CB /* AppDelegate.swift in Sources */,
+				28D38A8A2421D0F2006534CB /* CancellableArrayExtension.swift in Sources */,
 				28D38A742421A749006534CB /* SceneDelegate.swift in Sources */,
 				28D38A762421A749006534CB /* ContentView.swift in Sources */,
 			);
