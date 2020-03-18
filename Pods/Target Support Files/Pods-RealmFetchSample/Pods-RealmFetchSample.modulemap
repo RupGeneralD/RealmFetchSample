@@ -1,0 +1,6 @@
+framework module Pods_RealmFetchSample {
+  umbrella header "Pods-RealmFetchSample-umbrella.h"
+
+  export *
+  module * { export * }
+}
