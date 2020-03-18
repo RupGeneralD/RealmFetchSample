@@ -21,10 +21,11 @@ public class ContentViewModel: ObservableObject, Identifiable {
 	@Published var recoverable = false
 	
 	// Output
-	@Published var fetchButtonLabel = "Fetch"
-	@Published var isFetchEnabled = false
-	@Published var makeRealmButtonLabel = "Make Realm"
+	@Published private(set) var fetchButtonLabel = "Fetch"
+	@Published private(set) var isFetchEnabled = false
+	@Published private(set) var makeRealmButtonLabel = "Make Realm"
 	@Published private(set) var realmFileName: String?
+	@Published private(set) var items: [Stupid] = []
 	
     private var cancellables: [AnyCancellable] = []
 
@@ -53,10 +54,12 @@ public class ContentViewModel: ObservableObject, Identifiable {
 				AF.request(s.url, method: .post).responseData { response in
 					guard let s = self,
 						let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(s.realmFileName ?? "default.realm"),
-						let data = response.data else { return }
-
-					try? FileManager.default.removeItem(at: path)
-					try? data.write(to: path)
+						let data = response.data,
+//						let _ = try? FileManager.default.removeItem(at: path),
+						let _ = try? data.write(to: path),
+						let realm = try? Realm()
+					else { return }
+					s.items = Array(realm.objects(Stupid.self))
 				}
 		}.store(in: &cancellables)
 		

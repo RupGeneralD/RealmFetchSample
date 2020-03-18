@@ -17,15 +17,27 @@ struct ContentView: View {
 		VStack {
 			Text("Realm Test")
 			TextField("URL", text: $viewModel.url)
-			Button(action: viewModel.fetchTapped.send) { Text(viewModel.fetchButtonLabel) }
-				.disabled(!viewModel.isFetchEnabled)
+			Button<Text>(action: viewModel.fetchTapped.send) {
+				Text(viewModel.fetchButtonLabel)
+			}.disabled(!viewModel.isFetchEnabled)
+			
 			Spacer()
+			
 			Text("Tell me your stupid things.")
 			TextField("Thing", text: $viewModel.thing)
 			Toggle("Recoverable", isOn: $viewModel.recoverable)
-			Button(action: viewModel.makeRealmTapped.send) { Text(viewModel.makeRealmButtonLabel) }
+			Button<Text>(action: viewModel.makeRealmTapped.send) {
+				Text(viewModel.makeRealmButtonLabel)
+			}
+			
+			Spacer()
+			List(viewModel.items) { item in
+				HStack {
+					Text(item.thing).foregroundColor(item.recoverable ? .black : .red)
+				}
+			}
 		}
-    }
+	}
 }
 
 struct ContentView_Previews: PreviewProvider {

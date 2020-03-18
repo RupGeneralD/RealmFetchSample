@@ -10,7 +10,7 @@ import Foundation
 import RealmSwift
 
 @objcMembers
-public class Stupid: Object {
-	dynamic var thing = ""
-	dynamic var recoverable = true
+public class Stupid: Object, Identifiable {
+	public dynamic var thing = ""
+	public dynamic var recoverable = true
 }
