@@ -8,16 +8,23 @@
 
 import Foundation
 import Combine
+import Alamofire
+import RealmSwift
 
 public class ContentViewModel: ObservableObject, Identifiable {
 	
 	// Input
 	let fetchTapped = PassthroughSubject<Void, Never>()
-	@Published var url = "https://"
+	let makeRealmTapped = PassthroughSubject<Void, Never>()
+	@Published var url = "http://localhost:8888/default.realm"
+	@Published var thing = "xxxx on the floor"
+	@Published var recoverable = false
 	
 	// Output
 	@Published var fetchButtonLabel = "Fetch"
 	@Published var isFetchEnabled = false
+	@Published var makeRealmButtonLabel = "Make Realm"
+	@Published private(set) var realmFileName: String?
 	
     private var cancellables: [AnyCancellable] = []
 
@@ -30,9 +37,34 @@ public class ContentViewModel: ObservableObject, Identifiable {
 		.sink { [weak self] in self?.isFetchEnabled = $0 }
 		.store(in: &self.cancellables)
 		
+		$url.compactMap { URL(string: $0)?.lastPathComponent }
+			.sink { [weak self] in self?.realmFileName = $0 }
+			.store(in: &self.cancellables)
+		
+		$realmFileName
+			.compactMap { $0 }
+			.map { "Fetch \($0)" }
+			.sink{ [weak self] in self?.fetchButtonLabel = $0 }
+			.store(in: &cancellables)
+		
 		fetchTapped
 			.sink { [weak self] _ in
-				self?.fetchButtonLabel = "Fetching..."
+				guard let s = self else { return }
+				AF.request(s.url, method: .post).responseData { response in
+					
+				}
+		}.store(in: &cancellables)
+		
+		makeRealmTapped
+			.sink { [weak self] in
+				guard let s = self, let realm = try? Realm() else { return }
+//				var stupids = realm.objects(Stupid.self)
+				let item = Stupid()
+				item.thing = s.thing
+				item.recoverable = s.recoverable
+				try? realm.write {
+					realm.add(item)
+				}
 		}.store(in: &cancellables)
 	}
 }

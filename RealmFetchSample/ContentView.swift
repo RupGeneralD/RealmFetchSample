@@ -19,6 +19,11 @@ struct ContentView: View {
 			TextField("URL", text: $viewModel.url)
 			Button(action: viewModel.fetchTapped.send) { Text(viewModel.fetchButtonLabel) }
 				.disabled(!viewModel.isFetchEnabled)
+			Spacer()
+			Text("Tell me your stupid things.")
+			TextField("Thing", text: $viewModel.thing)
+			Toggle("Recoverable", isOn: $viewModel.recoverable)
+			Button(action: viewModel.makeRealmTapped.send) { Text(viewModel.makeRealmButtonLabel) }
 		}
     }
 }
