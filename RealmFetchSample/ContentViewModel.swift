@@ -49,19 +49,21 @@ public class ContentViewModel: ObservableObject, Identifiable {
 			.store(in: &cancellables)
 		
 		fetchTapped
-			.sink { [weak self] _ in
-				guard let s = self else { return }
-				AF.request(s.url, method: .post).responseData { response in
-					guard let s = self,
-						let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(s.realmFileName ?? "default.realm"),
-						let data = response.data,
-//						let _ = try? FileManager.default.removeItem(at: path),
-						let _ = try? data.write(to: path),
-						let realm = try? Realm()
+			.tryCompactMap { _ in URL(string: self.url) }
+			.flatMap { URLSession.shared.dataTaskPublisher(for: $0).mapError { $0 as Error } }
+			.map { $0.data }
+			.eraseToAnyPublisher()
+			.receive(on: DispatchQueue.main)
+			.sink(receiveCompletion: { e in print("Fetching error...") },
+				  receiveValue: { [weak self] data in
+				guard let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(self?.realmFileName ?? "default.realm"),
+					let _ = try? FileManager.default.removeItem(at: path),
+					let _ = try? data.write(to: path),
+					let realm = try? Realm()
 					else { return }
-					s.items = Array(realm.objects(Stupid.self))
-				}
-		}.store(in: &cancellables)
+				self?.items = Array(realm.objects(Stupid.self))
+			})
+			.store(in: &cancellables)
 		
 		makeRealmTapped
 			.sink { [weak self] in
