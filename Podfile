@@ -6,6 +6,7 @@ target 'RealmFetchSample' do
   use_frameworks!
   pod 'RealmSwift'
   pod 'Alamofire'
+	pod 'GzipSwift'
 
   # Pods for RealmFetchSample
 

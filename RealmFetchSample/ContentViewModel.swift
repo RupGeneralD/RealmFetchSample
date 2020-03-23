@@ -27,16 +27,29 @@ public class ContentViewModel: ObservableObject, Identifiable {
 	@Published private(set) var realmFileName: String?
 	@Published private(set) var items: [Stupid] = []
 	
-    private var cancellables: [AnyCancellable] = []
-
+	private var cancellables: [AnyCancellable] = []
+	
+	private var realmFileURL: URL? {
+		FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+			.first?.appendingPathComponent(realmFileName ?? "default.realm")
+	}
+	
+	private var realmRelatedFileURLs: [URL] {
+		[
+			realmFileURL,
+			realmFileURL?.appendingPathExtension("lock"),
+			realmFileURL?.appendingPathExtension("management")
+			].compactMap { $0 }
+	}
+	
 	private(set) lazy var onDisappear: () -> Void = { [weak self] in
-        self?.cancellables.clear()
-    }
+		self?.cancellables.clear()
+	}
 	
 	init() {
 		$url.map { $0.hasPrefix("http://") || $0.hasPrefix("https://") }
-		.sink { [weak self] in self?.isFetchEnabled = $0 }
-		.store(in: &self.cancellables)
+			.sink { [weak self] in self?.isFetchEnabled = $0 }
+			.store(in: &self.cancellables)
 		
 		$url.compactMap { URL(string: $0)?.lastPathComponent }
 			.sink { [weak self] in self?.realmFileName = $0 }
@@ -56,24 +69,26 @@ public class ContentViewModel: ObservableObject, Identifiable {
 			.receive(on: DispatchQueue.main)
 			.sink(receiveCompletion: { e in print("Fetching error...") },
 				  receiveValue: { [weak self] data in
-				guard let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(self?.realmFileName ?? "default.realm"),
-					let _ = try? FileManager.default.removeItem(at: path),
-					let _ = try? data.write(to: path),
-					let realm = try? Realm()
-					else { return }
-				self?.items = Array(realm.objects(Stupid.self))
+					guard let _ = autoreleasepool(invoking: { (try? Realm()).flatMap { try? $0.write($0.deleteAll)}}), // to clear also realm cache
+						let _ = self?.realmRelatedFileURLs.forEach({ try? FileManager.default.removeItem(at: $0) }), // clear files
+						let path = self?.realmFileURL,
+						let _ = try? data.write(to: path, options: .atomicWrite), // place downloaded realm file
+						let stupids = autoreleasepool(invoking: { (try? Realm()).map{ Array($0.objects(Stupid.self)) }}) // open realm stream again and make array to evaluate them
+						else { return } // is everything ok?
+					self?.items = stupids
+					print("Fetched realm file has \(stupids.count) items")
 			})
 			.store(in: &cancellables)
 		
 		makeRealmTapped
 			.sink { [weak self] in
 				guard let s = self, let realm = try? Realm() else { return }
-//				var stupids = realm.objects(Stupid.self)
 				let item = Stupid()
 				item.thing = s.thing
 				item.recoverable = s.recoverable
 				try? realm.write {
 					realm.add(item)
+					self?.items.append(item)
 				}
 		}.store(in: &cancellables)
 	}
